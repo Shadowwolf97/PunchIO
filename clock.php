@@ -31,7 +31,7 @@ function timeToString($seconds) {
     if($seconds >= 86400) {$ret["days"] = floor($seconds/86400); $seconds = $seconds%86400;}
     if($seconds >= 3600) {$ret["hours"] = floor($seconds/3600); $seconds = $seconds%3600;}
     if($seconds >= 60) {$ret["minutes"] = floor($seconds/60); $seconds = $seconds%60;}
-    $ret["seconds"] = $seconds;
+    if($seconds > 0) {$ret["seconds"] = $seconds;}
     $out = "";
     foreach($ret as $k=>$v) {
         if($v > 1) {
@@ -75,7 +75,18 @@ function timeToString($seconds) {
                         if($clocked) {
                     ?>
                         <h3>Clocked Into Project: <?php echo $data["project"]; ?></h3>
-                        <h3>Clocked in For: <?php echo timeToString(); ?></h3>
+                        <h3>Clocked in For: <span class="time"></span></h3>
+                        <center><a href="clock.php?method=out" class="btn btn-danger btn-lg" style="width: 95%;">Punch Out</a></center>
+                    <?php
+                        }else {
+                    ?>   
+                        
+                        <h3>Project:</h3>
+                        <form method="get" action="clock.php?method=in"> 
+                            <select>
+                                <option value="99">Misc. Project</option>
+                            </select>
+                        </form>
                     <?php
                         }
                     ?>
@@ -87,5 +98,27 @@ function timeToString($seconds) {
     </div> <!-- /container -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
     <script src="/assets/js/bootstrap.min.js"></script>
+    <?php if($clocked) {
+       ?>
+      <script>
+            var startTime = <?php echo $data["time"]*1000; ?>;
+
+            function display() {
+                var endTime = new Date();
+                var timeDiff = endTime - startTime;
+                timeDiff /= 1000;
+                var seconds = Math.round(timeDiff % 60);
+                timeDiff = Math.floor(timeDiff / 60);
+                var minutes = Math.round(timeDiff % 60);
+                timeDiff = Math.floor(timeDiff / 60);
+                var hours = Math.round(timeDiff % 24);
+                $(".time").html(hours + " hours, " + minutes + " minutes, and " + seconds + " seconds");
+                setTimeout(display, 1000);
+            }
+
+            display();
+        </script>
+       <?php
+    }?>
   </body>
 </html>
