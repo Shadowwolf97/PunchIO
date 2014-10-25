@@ -19,10 +19,26 @@ function getNavbar() {
           <ul class="nav navbar-nav">
             <li class="active"><a href="#">Home</a></li>
           </ul>
-          <ul class="nav navbar-nav navbar-right">
-            <li><a href="/register.php">Login</a></li>
-            <li><a href="/login.php">Register</a></li>
-          </ul>
+          <?php
+            if(isLoggedIn()) {
+               echo $_SESSION["user"]->id;
+            ?>
+              <ul class="nav navbar-nav navbar-right">
+                <li><a>Welcome back, <?php echo $_SESSION["user"]->name;?>!</a></li>
+                <li><a href="/settings.php">Settings</a></li>
+                <li><a href="/projects.php">Projects</a></li>
+                <li><a href="/logout.php">Logout</a></li>
+              </ul>
+            <?php
+            }else {
+            ?>
+              <ul class="nav navbar-nav navbar-right">
+                <li><a href="/login.php">Login</a></li>
+                <li><a href="/register.php">Register</a></li>
+              </ul>
+            <?php
+            }
+          ?>
         </div><!--/.nav-collapse -->
       </div>
     </div>
@@ -40,4 +56,12 @@ function hashPassword($password) {
         'cost' => 11
     ];
     return password_hash($password, PASSWORD_BCRYPT, $opt);
+}
+
+function isLoggedIn() {
+    if(isset($_SESSION["user"])) {
+        return true;   
+    }else {
+        return false;   
+    }
 }
