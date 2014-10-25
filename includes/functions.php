@@ -17,7 +17,11 @@ function getNavbar() {
         </div>
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
-            <li class="active"><a href="http://punchio.shdwlf.com/">Home</a></li>
+            <?php
+            if(isLoggedIn()) {
+                ?> <li><a href="http://punchio.shdwlf.com/">Time Clock</a></li> <?php   
+            }
+            ?>
           </ul>
           <?php
             if(isLoggedIn()) {

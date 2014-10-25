@@ -86,7 +86,7 @@ function timeToString($seconds) {
                 <div class="panel-heading"><center>Time Clock</center></div>
                 <div class="panel-body" style="text-align: center;">
                     <?php $data = lastAction(); $clocked = $data["action"] == 1; ?>
-                    <h1>You Are Currently Clocked: <?php if($clocked){echo '<span style="color: green;">IN</span>';}else{echo '<span style="color: red;">OUT</span>';} ?></h1><br />
+                    <h1>You Are Currently Punched: <?php if($clocked){echo '<span style="color: green;">IN</span>';}else{echo '<span style="color: red;">OUT</span>';} ?></h1><br />
                     
                     <?php
                         if($clocked) {
@@ -99,7 +99,7 @@ function timeToString($seconds) {
                     ?>   
                         
                         <center>
-                            <div style="width: 50%; text-align: left;">
+                            <div style="max-width: 360px; min-width: 200px;">
                                 <form method="post" action="clock.php?method=in" id="1"> 
                                 <div>
                                     <div class="input-group" style="margin-bottom: 5px;">

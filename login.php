@@ -44,14 +44,14 @@ if($_POST) {
     <div class="container">
         
     <div class="row">
-        <div class="col-md-4 col-md-offset-4">
+        <div class="col-md-4 col-md-offset-4" id="login">
             <div class="panel panel-default">
                 <div class="panel-heading">Login</div>
                 <div class="panel-body">
                     <form action="login.php" method="post">
-                        <input type="text" placeholder="Email Address" name="email" style="margin-bottom: 5px;" class="form-control">
+                        <input type="text" autocomplete="off" placeholder="Email Address" name="email" style="margin-bottom: 5px;" class="form-control">
                         <input type="password" placeholder="Password" name="password" style="margin-bottom: 5px;" class="form-control">
-                        <input type="submit" class="btn btn-success form-control">
+                        <input type="submit" class="btn btn-success form-control" value="Login">
                     </form>
                 </div>
             </div>

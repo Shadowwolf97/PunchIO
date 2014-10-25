@@ -25,17 +25,16 @@ if(!isset($_GET['proj']))
     <div class="row">
         <div class="col-md-8 col-md-offset-2">
             <div class="panel panel-default">
-                <div class="panel-heading">Sessions</div>
-                <table class="table">
+                <?php $proj = intval($_GET['proj']); $db = getMySQL(); $a = $db->query("SELECT * FROM projects WHERE projectid=$proj")->fetch_object(); ?>
+                <div class="panel-heading">Sessions For <b><?php echo $a->projectname; ?></b> <i>All Times Are In EST</i></div>
+                <table class="table" style="text-align: center;">
                     <tr>
-                        <th>Begin</th>
-                        <th>End</th>
-                        <th>Total Time</th>
-                        <th>Commits</th>
+                        <th style="text-align: center;">Begin</th>
+                        <th style="text-align: center;">End</th>
+                        <th style="text-align: center;">Session Length</th>
+                        <th style="text-align: center;">Commits</th>
                     </tr>
                     <?php
-                        $db = getMySQL();
-                        $proj = intval($_GET['proj']);
                         $res = $db->query("SELECT * FROM actions WHERE project=$proj ORDER BY actionid ASC");
                         $data = Array();
                         $tmp = Array();
@@ -54,18 +53,33 @@ if(!isset($_GET['proj']))
                             }
                         }
 
-                        $rep = $db->query("SELECT * FROM projects WHERE projectid=$proj")->fetch_object()->githubrepo;
-                        $auth = $db->query("SELECT * FROM github WHERE accountowner={$_SESSION['user']->id}")->fetch_object()->githubid;
+                        
+                        $g = $db->query("SELECT * FROM github WHERE accountowner={$_SESSION['user']->id}")->fetch_object();
+                        $auth = $g->githubid;
+                        $rep = $a->githubrepo;
+                        $name = $a->githubname;
+                        
 
                         $commits = Array();
                         foreach($data as $k=>$v) {
                             $res = $db->query("SELECT * FROM commits WHERE time >= {$v[1]} AND time <= {$v[0]} AND repositoryid='$rep' AND author='$auth'");
-                            $com = "";
+                            $com = Array();
                             if($res->num_rows) {
-                                $d = $res->fetch_object();
-                                $com = $d->commitid;
+                                while($d = $res->fetch_object()) {
+                                    $com[] = $d->commitid;
+                                }
                             }
-                            echo "<tr><td>{$v[1]}</td><td>{$v[0]}</td><td>Soon</td><td>".substr($com, 0, 8)."</td></tr>";
+                            $coms = "";
+                            $i = 0;
+                            foreach($com as $kk=>$vv) {
+                                $coms .= "<a href='https://github.com/$name/commit/$vv'>".substr($vv, 0, 8)."</a> ";
+                                $i += 1;
+                                if($i == 3) {
+                                    $coms .= "<br />";
+                                    $i = 0;
+                                }
+                            }
+                            echo "<tr><td>".date('m/d/Y H:i:s', $v[1])."</td><td>".date("m/d/Y H:i:s", $v[0])."</td><td>".formatSeconds($v[0]-$v[1])."</td><td>$coms</td></tr>";
                         }
                     ?>
                 </table>
