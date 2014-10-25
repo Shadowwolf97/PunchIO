@@ -5,12 +5,20 @@ if(isset($_GET["method"])) {
     if($_GET["method"] == "in") {
         $db = getMySQL();
         $time = time();
-        $res = $db->query("INSERT INTO actions (time, action, user, project) VALUES ($time, 1, {$_SESSION["user"]->id}, 99)");
+        $ii = intval($_POST["proj"]);
+        $res = $db->query("INSERT INTO actions (time, action, user, project) VALUES ($time, 1, {$_SESSION["user"]->id}, $ii)");
         header('location: /clock.php');
     }else if($_GET["method"] == "out") {
         $db = getMySQL();
         $time = time();
         $res = $db->query("INSERT INTO actions (time, action, user, project) VALUES ($time, 0, {$_SESSION["user"]->id}, 99)");
+        header('location: /clock.php');
+    }else if($_GET["method"] == "project") {
+        if($_POST) {
+            $db = getMySQL();
+            $name = $db->escape_string($_POST['name']);
+            $res = $db->query("INSERT INTO projects (projectname, projectowner) VALUES ('$name', {$_SESSION["user"]->id})");
+        }
         header('location: /clock.php');
     }
 }
@@ -74,19 +82,36 @@ function timeToString($seconds) {
                     <?php
                         if($clocked) {
                     ?>
-                        <h3>Clocked Into Project: <?php echo $data["project"]; ?></h3>
+                        <h3>Clocked Into Project: <?php $db = getMySQL(); $res = $db->query("SELECT * FROM projects WHERE projectid={$data["project"]}"); $dat = $res->fetch_object(); echo $dat->projectname; ?></h3>
                         <h3>Clocked in For: <span class="time"></span></h3>
                         <center><a href="clock.php?method=out" class="btn btn-danger btn-lg" style="width: 95%;">Punch Out</a></center>
                     <?php
                         }else {
                     ?>   
                         
-                        <h3>Project:</h3>
-                        <form method="get" action="clock.php?method=in"> 
-                            <select>
-                                <option value="99">Misc. Project</option>
-                            </select>
-                        </form>
+                        <center>
+                            <div style="width: 50%; text-align: left;">
+                                <form method="post" action="clock.php?method=in" id="1"> 
+                                <div>
+                                    <div class="input-group" style="margin-bottom: 5px;">
+                                        <span class="input-group-addon">Project</span>
+                                        <select class="form-control" name="proj">
+                                            <option value="-1">Create a New Project</option>
+                                            <?php
+                            
+                                                $db = getMySQL();
+                                                $res = $db->query("SELECT * FROM projects WHERE projectowner={$_SESSION["user"]->id} ORDER BY projectname ASC");
+                                                while($obj = $res->fetch_object()) {
+                                                    echo "<option value='{$obj->projectid}'>{$obj->projectname}</option>";
+                                                }
+                                            ?>
+                                        </select>
+                                    </div>
+                                    <input type="submit" class="btn btn-success form-control" value="Punch In">
+                                </div>
+                            </form>
+                            </div>
+                        </center>
                     <?php
                         }
                     ?>
@@ -102,10 +127,11 @@ function timeToString($seconds) {
        ?>
       <script>
             var startTime = <?php echo $data["time"]*1000; ?>;
-
+            var offset = -1 * ((new Date()) - <?php echo time()*1000; ?>);
+                          
             function display() {
                 var endTime = new Date();
-                var timeDiff = endTime - startTime;
+                var timeDiff = (endTime - startTime) + offset;
                 timeDiff /= 1000;
                 var seconds = Math.round(timeDiff % 60);
                 timeDiff = Math.floor(timeDiff / 60);
@@ -119,6 +145,61 @@ function timeToString($seconds) {
             display();
         </script>
        <?php
-    }?>
+    }else {
+    ?>
+      <div id="wrap" style="background: rgba(0,0,0,.3); height: 100vh; width: 100vw; postion: absolute; left: 0px; top: 0px; display: none; z-index: 100000;">
+          <div class="panel panel-success" style="display: none; width: 350px; height: auto;" id="popup">
+            <div class="panel-heading">Create a new project<a class="pull-right" style="cursor: pointer;" id="close">X</a></div>
+            <div class="panel-body">
+                <form action="clock.php?method=project" method="post">
+                    <input type="text" name="name" id="nme" placeholder="Project Name" class="form-control" style="margin-bottom: 5px"/>
+                    <input type="submit" value="Create Project" class="btn btn-success form-control">
+                </form>
+            </div>
+          </div>
+      </div>
+      
+      <script>
+      
+          jQuery.fn.center = function (boo) {
+                this.css("position","absolute");
+                if(boo) {
+                    this.css("top", Math.max(0, (($(window).height() - $(this).outerHeight()) * .25) + 
+                                                            $(window).scrollTop()) + "px");
+                }else {
+                    this.css("top", Math.max(0, (($(window).height() - $(this).outerHeight()) / 2) + 
+                                                            $(window).scrollTop()) + "px");   
+                }
+                this.css("left", Math.max(0, (($(window).width() - $(this).outerWidth()) / 2) + 
+                                                            $(window).scrollLeft()) + "px");
+                return this;
+            }
+          
+          $(document).keyup(function(e) {
+              if (e.keyCode == 27) { $('#close').click(); }   // esc
+          });
+          
+          $('#popup').center(true);
+          $('#wrap').center(false);
+          
+          $('#close').click(function() {
+            $("#popup").fadeOut(); 
+            $("#wrap").fadeOut();
+          });
+          
+          $('#1').submit(function(e) {
+             if($('select').val() == -1) {
+                 e.preventDefault();   
+                 $("#popup").fadeIn();
+                 $("#wrap").fadeIn();
+                 $("#nme").focus();
+             }
+          });
+      
+      </script>
+      
+    <?php
+    }
+    ?>
   </body>
 </html>

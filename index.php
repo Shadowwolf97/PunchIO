@@ -1,5 +1,8 @@
 <?php
 require('includes/load.php');
+if(isLoggedIn()) {
+    header('location: /clock.php');
+}
 ?>
 
 <!DOCTYPE html>
