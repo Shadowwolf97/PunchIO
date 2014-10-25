@@ -1,6 +1,14 @@
 <?php
 include('includes/load.php');
 
+if(isset($_GET['remove'])) {
+    $db = getMySQL();
+    $id = intval($_GET['remove']);
+    $db->query("DELETE FROM projects WHERE projectid=$id");
+    $db->query("DELETE FROM actions WHERE project=$id");
+    header('location: /projects.php');
+}
+
 function totalTime($projectid) {
     $db = getMySQL();
     $res = $db->query("SELECT * FROM actions WHERE project=$projectid ORDER BY actionid ASC");
@@ -85,7 +93,7 @@ function totalTime($projectid) {
                     $db = getMySQL();
                     $res = $db->query("SELECT * FROM projects WHERE projectowner={$_SESSION['user']->id}");
                     while($obj = $res->fetch_object()) {
-                        echo "<tr><td>{$obj->projectname}</td><td style='text-align: center'>".(formatSeconds(totalTime($obj->projectid)))."</td><td style='text-align: right;'><a href='/sessions.php?proj={$obj->projectid}'>View Sessions</a></td><td><center><a href='#' class='ic'><i class='fa fa-times'></i></a> <a class='ic' href='/github.php?proj={$obj->projectid}'><i class='fa fa-github'></i></a></center></td></tr>";
+                        echo "<tr><td>{$obj->projectname}</td><td style='text-align: center'>".(formatSeconds(totalTime($obj->projectid)))."</td><td style='text-align: right;'><a href='/sessions.php?proj={$obj->projectid}'>View Sessions</a></td><td><center><a class='ic' href='/github.php?proj={$obj->projectid}'><i class='fa fa-github'></i></a> <a href='/projects.php?remove={$obj->projectid}' class='ic'><i class='fa fa-times'></i></a></center></td></tr>";
                     }
                     ?>
                 </table>

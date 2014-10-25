@@ -33,6 +33,7 @@ if(!isset($_GET['proj']))
                         <th style="text-align: center;">End</th>
                         <th style="text-align: center;">Session Length</th>
                         <th style="text-align: center;">Commits</th>
+                        <th style="text-align: center;">Notes</th>
                     </tr>
                     <?php
                         $res = $db->query("SELECT * FROM actions WHERE project=$proj ORDER BY actionid ASC");
@@ -48,21 +49,28 @@ if(!isset($_GET['proj']))
                                 }else {
                                     $low = $tmp[1];   
                                 }
-                                $data[] = [$big, $low];
+                                if($d->notefile == null)
+                                    $data[] = [$big, $low];
+                                else
+                                    $data[] = [$big, $low, $d->notefile];
                                 $tmp = [];
                             }
                         }
 
                         
-                        $g = $db->query("SELECT * FROM github WHERE accountowner={$_SESSION['user']->id}")->fetch_object();
-                        $auth = $g->githubid;
+                        if($g = $db->query("SELECT * FROM github WHERE accountowner={$_SESSION['user']->id}")->fetch_object()) {
+                            $auth = $g->githubid;
+                        }else {
+                            $auth=-1;   
+                        }
                         $rep = $a->githubrepo;
                         $name = $a->githubname;
+                        
                         
 
                         $commits = Array();
                         foreach($data as $k=>$v) {
-                            $res = $db->query("SELECT * FROM commits WHERE time >= {$v[1]} AND time <= {$v[0]} AND repositoryid='$rep' AND author='$auth'");
+                            $res = $db->query("SELECT * FROM commits WHERE time >= {$v[1]} AND time <= {$v[0]} AND repositoryid='$rep' AND author=$auth");
                             $com = Array();
                             if($res->num_rows) {
                                 while($d = $res->fetch_object()) {
@@ -79,7 +87,14 @@ if(!isset($_GET['proj']))
                                     $i = 0;
                                 }
                             }
-                            echo "<tr><td>".date('m/d/Y H:i:s', $v[1])."</td><td>".date("m/d/Y H:i:s", $v[0])."</td><td>".formatSeconds($v[0]-$v[1])."</td><td>$coms</td></tr>";
+                            
+                            if(count($v) == 3) {
+                                $notes = "<td><a href='http://punchio.shdwlf.com/notes/{$v[2]}'>Notes</a></td>";
+                            }else {
+                                $notes = "<td></td>";   
+                            }
+                            
+                            echo "<tr><td>".date('m/d/Y H:i:s', $v[1])."</td><td>".date("m/d/Y H:i:s", $v[0])."</td><td>".formatSeconds($v[0]-$v[1])."</td><td>$coms</td>$notes</tr>";
                         }
                     ?>
                 </table>

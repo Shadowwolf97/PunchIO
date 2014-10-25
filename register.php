@@ -12,7 +12,8 @@ if($_POST) {
         //Go ahead and create the account
         $password = hashPassword($_POST['password']);
         $name = $db->escape_string($_POST['name']);
-        $res = $db->query("INSERT INTO users (name, email, password) VALUES ('$name', '$email', '$password')");
+        $key = sha1($password);
+        $res = $db->query("INSERT INTO users (name, email, password, apikey) VALUES ('$name', '$email', '$password', '$key')");
         if($res !== false) {
             header('location: /login.php');   
         }else {

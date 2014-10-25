@@ -38,8 +38,9 @@ function lastAction() {
     }else {
         $db = getMySQL();
         $res = $db->query("SELECT * FROM actions WHERE user={$_SESSION["user"]->id} ORDER BY time DESC LIMIT 1"); //Pull last action from DB
-        $obj = $res->fetch_object();
-        return ["id"=>$obj->actionid, "time"=>$obj->time, "project"=>$obj->project, "action"=>$obj->action];
+        if($obj = $res->fetch_object())
+            return ["id"=>$obj->actionid, "time"=>$obj->time, "project"=>$obj->project, "action"=>$obj->action];
+        return ["action"=>0];
     }
 }
 
