@@ -17,9 +17,14 @@ if(isset($_SESSION["state"], $_SESSION["access_token"])) {
             $data = getSslPage("https://api.github.com/user?access_token={$_SESSION["access_token"]}");
             $data = json_decode($data, true);
             $res = $db->query("INSERT INTO github (access_token, state, accountowner, username, legitid) VALUES ('$token', '$state', '{$_SESSION["user"]->id}', '{$data["login"]}', '{$data["id"]}')");
+            unset($_SESSION['state']);
+            unset($_SESSION['access_token']);
         }
     }
 }
+
+ini_set('display_errors', 'On');
+error_reporting(E_ALL);
 
 
 function getSslPage($url) {

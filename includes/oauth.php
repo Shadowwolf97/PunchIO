@@ -48,15 +48,9 @@ if(get('code')) {
 }
  
 if(session('access_token')) {    
-  echo '<h3>Logged In</h3>';
-  echo '<h4>' . print_r($_SESSION) . '</h4>';
-  echo '<pre>';
-  print_r($user);
-  echo '</pre>';
- 
+    header('location: /'); 
 } else {
-  echo '<h3>Not logged in</h3>';
-  echo '<p><a href="?action=login">Log In</a></p>';
+    header('location: ?action=login');
 }
  
  
