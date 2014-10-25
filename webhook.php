@@ -1,7 +1,7 @@
 <?php
 include('includes/load.php');
 
-$json = json_decode(file_get_contents('php://input'), array);
+$json = json_decode(file_get_contents('php://input'), true);
 $repoid = $json["repository"]["id"];
 $time = time();
 $cid = $json["commits"][0]["id"];
