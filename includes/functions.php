@@ -29,3 +29,15 @@ function getNavbar() {
 
     <?php
 }
+
+function getMySQL() {
+    //MySQL creds are ignored from the repo, but they are pretty self explanatory.
+    return new MySQLi(MYSQL_HOST, MYSQL_USER, MYSQL_PASS, MYSQL_DB);
+}
+
+function hashPassword($password) {
+    $opt = [
+        'cost' => 11
+    ];
+    return password_hash($password, PASSWORD_BCRYPT, $opt);
+}
