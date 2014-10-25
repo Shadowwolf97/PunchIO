@@ -99,7 +99,7 @@ function formatSeconds($sec) {
                     $db = getMySQL();
                     $res = $db->query("SELECT * FROM projects WHERE projectowner={$_SESSION['user']->id}");
                     while($obj = $res->fetch_object()) {
-                        echo "<tr><td>{$obj->projectname}</td><td style='text-align: center'>".(formatSeconds(totalTime($obj->projectid)))."</td><td style='text-align: right;'><a href='#'>View Sessions</a></td><td><center><a href='#' class='ic'><i class='fa fa-times'></i></a> <a class='ic' href='/github.php?proj={$obj->projectid}'><i class='fa fa-github'></i></a></center></td></tr>";
+                        echo "<tr><td>{$obj->projectname}</td><td style='text-align: center'>".(formatSeconds(totalTime($obj->projectid)))."</td><td style='text-align: right;'><a href='/sessions.php?proj={$obj->projectid}'>View Sessions</a></td><td><center><a href='#' class='ic'><i class='fa fa-times'></i></a> <a class='ic' href='/github.php?proj={$obj->projectid}'><i class='fa fa-github'></i></a></center></td></tr>";
                     }
                     ?>
                 </table>
