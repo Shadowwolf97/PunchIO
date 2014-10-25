@@ -57,6 +57,27 @@ function formatSeconds($sec) {
       
     <title>PunchIO</title>
     <link href="/assets/css/bootstrap.min.css" rel="stylesheet">
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+      
+    <style>
+        .ic {
+            color: #000;
+            font-size: 120%;
+        }
+        
+        a.ic:hover {
+            color: #000;
+            text-decoration: none;
+        }
+        
+        tr {
+            height: 20px;
+        }
+        
+        td {
+            line-height: 20px;   
+        }
+    </style>
   <body>
 
     <?php getNavbar(); ?>
@@ -78,7 +99,7 @@ function formatSeconds($sec) {
                     $db = getMySQL();
                     $res = $db->query("SELECT * FROM projects WHERE projectowner={$_SESSION['user']->id}");
                     while($obj = $res->fetch_object()) {
-                        echo "<tr><td>{$obj->projectname}</td><td style='text-align: center'>".(formatSeconds(totalTime($obj->projectid)))."</td><td style='text-align: right;'><a href='#'>View Sessions</a></td><td><center><a href='#'>X</a></center></td></tr>";
+                        echo "<tr><td>{$obj->projectname}</td><td style='text-align: center'>".(formatSeconds(totalTime($obj->projectid)))."</td><td style='text-align: right;'><a href='#'>View Sessions</a></td><td><center><a href='#' class='ic'><i class='fa fa-times'></i></a> <a class='ic' href='/github.php?proj={$obj->projectid}'><i class='fa fa-github'></i></a></center></td></tr>";
                     }
                     ?>
                 </table>

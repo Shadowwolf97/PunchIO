@@ -13,6 +13,7 @@ include('includes/load.php');
       
     <title>PunchIO</title>
     <link href="/assets/css/bootstrap.min.css" rel="stylesheet">
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
   <body>
 
     <?php getNavbar(); ?>
