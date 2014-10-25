@@ -19,16 +19,11 @@ include('includes/load.php');
       
     <div class="container">
         
-      <div class="jumbotron">
-        <h1>PunchIO - Punch In, Punch Out.</h1>
-        <h3><center>A simple way to track time spent on your projects.</center></h3>
-        <p>
-          <center>
-            <a class="btn btn-lg btn-default" href="/login.php" role="button" style="margin-right: 20px;">Login</a>
-            <a class="btn btn-lg btn-primary" href="/register.php" role="button">Register</a>
-          </center>
-        </p>
-      </div>
+    <div class="row">
+        <div class="col-md-12">
+            //Content PLZ
+        </div>
+    </div>
 
     </div> <!-- /container -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
