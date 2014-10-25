@@ -5,19 +5,28 @@ if(isset($_GET["method"])) {
     if($_GET["method"] == "in") {
         $db = getMySQL();
         $time = time();
-        $ii = intval($_POST["proj"]);
+        if(isset($_POST["proj"])) {
+            $ii = intval($_POST["proj"]);
+        }else {
+            $ii = intval($_GET["proj"]);   
+        }
         $res = $db->query("INSERT INTO actions (time, action, user, project) VALUES ($time, 1, {$_SESSION["user"]->id}, $ii)");
         header('location: /clock.php');
     }else if($_GET["method"] == "out") {
         $db = getMySQL();
         $time = time();
-        $res = $db->query("INSERT INTO actions (time, action, user, project) VALUES ($time, 0, {$_SESSION["user"]->id}, 99)");
+        $ii = intval($_GET['proj']);
+        $res = $db->query("INSERT INTO actions (time, action, user, project) VALUES ($time, 0, {$_SESSION["user"]->id}, $ii)");
         header('location: /clock.php');
     }else if($_GET["method"] == "project") {
         if($_POST) {
             $db = getMySQL();
             $name = $db->escape_string($_POST['name']);
             $res = $db->query("INSERT INTO projects (projectname, projectowner) VALUES ('$name', {$_SESSION["user"]->id})");
+            if(!empty($_POST["check"])) {
+                header('location: /clock.php?method=in&proj='.$db->insert_id);   
+                exit;
+            }
         }
         header('location: /clock.php');
     }
@@ -77,14 +86,14 @@ function timeToString($seconds) {
                 <div class="panel-heading"><center>Time Clock</center></div>
                 <div class="panel-body" style="text-align: center;">
                     <?php $data = lastAction(); $clocked = $data["action"] == 1; ?>
-                    <h1>You Are Currently Clocked: <?php if($clocked){echo '<span style="color: green;">IN</span>';}else{echo '<span style="color: red;">OUT</span>';} ?></h1>
+                    <h1>You Are Currently Clocked: <?php if($clocked){echo '<span style="color: green;">IN</span>';}else{echo '<span style="color: red;">OUT</span>';} ?></h1><br />
                     
                     <?php
                         if($clocked) {
                     ?>
                         <h3>Clocked Into Project: <?php $db = getMySQL(); $res = $db->query("SELECT * FROM projects WHERE projectid={$data["project"]}"); $dat = $res->fetch_object(); echo $dat->projectname; ?></h3>
                         <h3>Clocked in For: <span class="time"></span></h3>
-                        <center><a href="clock.php?method=out" class="btn btn-danger btn-lg" style="width: 95%;">Punch Out</a></center>
+                        <center><a href="clock.php?method=out&proj=<?php echo $data["project"]; ?>" class="btn btn-danger btn-lg" style="width: 95%;">Punch Out</a></center>
                     <?php
                         }else {
                     ?>   
@@ -153,7 +162,8 @@ function timeToString($seconds) {
             <div class="panel-body">
                 <form action="clock.php?method=project" method="post">
                     <input type="text" name="name" id="nme" placeholder="Project Name" class="form-control" style="margin-bottom: 5px"/>
-                    <input type="submit" value="Create Project" class="btn btn-success form-control">
+                    <center><input type="checkbox" name="check" value="check" checked> Punch In Automatically<br /></center>
+                    <input type="submit" value="Create Project" class="btn btn-success form-control" style="margin-top: 3px">
                 </form>
             </div>
           </div>
