@@ -21,7 +21,6 @@ function getNavbar() {
           </ul>
           <?php
             if(isLoggedIn()) {
-               echo $_SESSION["user"]->id;
             ?>
               <ul class="nav navbar-nav navbar-right">
                 <li><a>Welcome back, <?php echo $_SESSION["user"]->name;?>!</a></li>

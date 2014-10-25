@@ -1,10 +1,5 @@
 <?php
 require('includes/load.php');
-
-if($_POST) {
-    
-}
-
 ?>
 
 <!DOCTYPE html>
