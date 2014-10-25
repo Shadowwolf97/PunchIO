@@ -19,5 +19,5 @@ if($res->num_rows) {
     }
 }else {
     //Maybe github will stop sending us requests if we 4oh4? ;o
-    http_response_code(404)
+    http_response_code(404);
 }
