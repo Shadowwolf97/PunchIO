@@ -11,7 +11,32 @@ if($_POST) {
         $repoid = "NULL";
         $reponame = "NULL";
     }else {
-        $reponame = "'".$reponame."'";   
+        $j = json_encode(["name"=>"web", "active"=>true, "events"=>["push"], "config"=>["url"=>"http://punchio.shdwlf.com/webhook.php","content_type"=>"json"]]);
+        $a = explode("/", $reponame);
+        $owner = $a[0];
+        $repo = $a[1];
+        $token = $db->query("SELECT * FROM github WHERE accountowner={$_SESSION['user']->id}")->fetch_object()->access_token;
+        $ch = curl_init("https://api.github.com/repos/$owner/$repo/hooks?access_token=$token");
+        $result = curl_exec($ch);
+        curl_close($ch);
+        $q = json_decode($result, true);
+        $added = false;
+        foreach($q as $k=>$v) {
+            if($v["config"]["url"] == "http://punchio.shdwlf.com/webhook.php") {
+                $added = true;   
+            }
+        }
+        if(!$added) {
+            $ch = curl_init("https://api.github.com/repos/$owner/$repo/hooks?access_token=$token");
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $j);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type:application/json', 'User-Agent: curl'));
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            $result = curl_exec($ch);
+            curl_close($ch);
+        }
+        
+        $reponame = "'".$reponame."'";
+        
     }
     $id = intval($_GET['proj']);
     $db->query("UPDATE projects SET projectname='$name', githubrepo=$repoid, githubname=$reponame WHERE projectid=$id");
@@ -96,6 +121,8 @@ if($_POST) {
                                                 ?>
                                             </select>
                                             <?php
+                                    }else {
+                                        echo "<center>You must link your GitHub account first!</center>";   
                                     }
                                 ?>
                             </td>
