@@ -87,14 +87,14 @@ function timeToString($seconds) {
                 <div class="panel-heading"><center>Time Clock</center></div>
                 <div class="panel-body" style="text-align: center;">
                     <?php $data = lastAction(); $clocked = $data["action"] == 1; ?>
-                    <h1>You Are Currently Punched: <?php if($clocked){echo '<span style="color: green;">IN</span>';}else{echo '<span style="color: red;">OUT</span>';} ?></h1><br />
+                    <h1>You Are Currently Clocked: <?php if($clocked){echo '<span style="color: green;">IN</span>';}else{echo '<span style="color: red;">OUT</span>';} ?></h1><br />
                     
                     <?php
                         if($clocked) {
                     ?>
                         <h3>Clocked Into Project: <?php $db = getMySQL(); $res = $db->query("SELECT * FROM projects WHERE projectid={$data["project"]}"); $dat = $res->fetch_object(); echo $dat->projectname; ?></h3>
                         <h3>Clocked in For: <span class="time"></span></h3>
-                        <center><a href="clock.php?method=out&proj=<?php echo $data["project"]; ?>" class="btn btn-danger btn-lg" style="width: 95%;">Punch Out</a></center>
+                        <center><a href="clock.php?method=out&proj=<?php echo $data["project"]; ?>" class="btn btn-danger btn-lg" style="width: 95%;">Clock Out</a></center>
                     <?php
                         }else {
                     ?>   
@@ -117,7 +117,7 @@ function timeToString($seconds) {
                                             ?>
                                         </select>
                                     </div>
-                                    <input type="submit" class="btn btn-success form-control" value="Punch In">
+                                    <input type="submit" class="btn btn-success form-control" value="Clock In">
                                 </div>
                             </form>
                             </div>
@@ -163,7 +163,7 @@ function timeToString($seconds) {
             <div class="panel-body">
                 <form action="clock.php?method=project" method="post">
                     <input type="text" name="name" id="nme" placeholder="Project Name" class="form-control" style="margin-bottom: 5px"/>
-                    <center><input type="checkbox" name="check" value="check" checked> Punch In Automatically<br /></center>
+                    <center><input type="checkbox" name="check" value="check" checked> Clock In Automatically<br /></center>
                     <input type="submit" value="Create Project" class="btn btn-success form-control" style="margin-top: 3px">
                 </form>
             </div>

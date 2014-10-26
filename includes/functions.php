@@ -16,19 +16,11 @@ function getNavbar() {
           <a class="navbar-brand" href="http://punchio.shdwlf.com/">PunchIO</a>
         </div>
         <div class="navbar-collapse collapse">
-          <ul class="nav navbar-nav">
             <?php
-            if(isLoggedIn()) {
-                ?> <li><a href="http://punchio.shdwlf.com/">Time Clock</a></li> <?php   
-            }
-            ?>
-          </ul>
-          <?php
             if(isLoggedIn()) {
             ?>
               <ul class="nav navbar-nav navbar-right">
                 <li><a>Welcome back, <?php echo $_SESSION["user"]->name;?>!</a></li>
-                <li><a href="/settings.php">Settings</a></li>
                 <li><a href="/projects.php">Projects</a></li>
                 <li><a href="/logout.php">Logout</a></li>
               </ul>

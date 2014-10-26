@@ -21,10 +21,9 @@ if(isLoggedIn()) {
     <?php getNavbar(); ?>
     <div style="width: 100VW; position: absolute; z-index: -1; top: 0; height: 100px; background: #8C8C8C;"></div>
     <div class="container-fluid" style="background: #E6E6E6;">
-        
-      <div class="jumbotron">
+      <div class="jumbotron" style="background: url('/assets/img/background.png') center #E6E6E6 no-repeat; margin-bottom: 0;">
         <center><h1>PunchIO - Punch In, Punch Out.</h1></center>
-        <h3><center>A simple way to track time spent on your projects.</center></h3><br/>
+        <h3><center>The simple way to track time spent on your projects.</center></h3><br/>
         <p style="text-align: center;">
             <a class="btn btn-lg btn-default" href="/login.php" role="button" style="width: 150px;">Login</a>
             <a class="btn btn-lg btn-primary" href="/register.php" role="button" style="width: 150px;">Register</a>
